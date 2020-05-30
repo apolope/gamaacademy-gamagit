@@ -7,25 +7,33 @@ function App(props) {
 
   const history = useHistory();
   const [ usuario, setUsuario ] = useState('');
+  const [ erro, setErro ] = useState(false);
 
   function handlePesquisa() {
-    axios.get(`https://api.github.com/users/${usuario}/repos`).then(response => {
+    axios.get(`https://api.github.com/users/${usuario}/repos`)
+    .then(response => {
       const repositories = response.data;
       const repositoriesName = [];
 
       repositories.map(repository => repositoriesName.push(repository.name));
 
       localStorage.setItem('repositoriesName', JSON.stringify(repositoriesName));
-
+      setErro(false);
       history.push('/repositories');
-  });
+  })
+    .catch(err => {
+      setErro(true);
+    });
   }
 
   return (
-    <S.Container>
+  <S.HomeContainer>
+    <S.Content>
       <S.Input className="usuarioInput" placeholder="Usúario" value={usuario} onChange={e => setUsuario(e.target.value)} />
       <S.Button type="button" onClick={ handlePesquisa }>Pesquisar</S.Button>
-    </S.Container>
+    </S.Content>
+    { erro ? <S.ErroMsg>Ocorreu um erro. Tente Novamente!</S.ErroMsg> : '' }
+  </S.HomeContainer>
   );
 }
 

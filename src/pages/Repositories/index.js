@@ -1,13 +1,24 @@
 ﻿import React, { useEddect, useEffect, useState } from 'react';
 import * as S from './styled';
+import { useHistory } from 'react-router-dom';
+
 
 export default function Respositories() {
+
     const [ repositories, setRespositories ] = useState([]);
+    const history = useHistory();
+
     useEffect(() => {
         let repositoriesName = localStorage.getItem('repositoriesName');
-        repositoriesName = JSON.parse(repositoriesName);
-        setRespositories(repositoriesName);
-        localStorage.clear();
+
+        if(repositoriesName != null) {
+            repositoriesName = JSON.parse(repositoriesName);
+            setRespositories(repositoriesName);
+            localStorage.clear();
+        } else {
+            history.push('/');
+        }
+        
     }, []);
 
     return (
@@ -18,9 +29,9 @@ export default function Respositories() {
                     return (
                         <S.ListItem>Repositório: {repository}</S.ListItem>
                     )
-                }) }
-                
+                }) }                
             </S.List>
+            <S.LinkHome to='/'>Voltar</S.LinkHome>
         </S.Container>
     );
 }
